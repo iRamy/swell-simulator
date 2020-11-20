@@ -41,20 +41,21 @@ class SwellSimulator:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        sys.exit()
 
             self.A_coord = (self.origin_coord[0] - self.D["l1"] * m.sin(self.psi),
                             self.origin_coord[1] - self.D["l1"] * m.cos(self.psi))
             try:
                 self.settings_window.error_label.grid_remove()
-                phi = self._calc_phi(self.psi, self.D["l1"], self.D["l2"], self.D["l3"], self.D["a"], self.D["b"])
-                theta = self._calc_theta(self.phi, self.D["l3"], self.D["l4'"], self.D["l5"],
+                self.phi = self._calc_phi(self.psi, self.D["l1"], self.D["l2"], self.D["l3"], self.D["a"], self.D["b"])
+                self.theta = self._calc_theta(self.phi, self.D["l3"], self.D["l4'"], self.D["l5"],
                                               self.D["a"], self.D["c"], self.D["b"], self.D["d"])
             except ValueError:
                 self.settings_window.math_er()
             else:
                 self.psi += 200 / self.fps * (m.pi / 180)  # degrees per second
-                self.phi = phi
-                self.theta = theta
 
                 self.C_coord = (self.origin_coord[0] + self.D["b"], self.origin_coord[1] + self.D["a"])
                 self.D_coord = (self.C_coord[0] - self.D["l3"] * m.sin(self.phi), self.C_coord[1] + self.D["l3"] * m.cos(self.phi))
@@ -70,6 +71,8 @@ class SwellSimulator:
 
             self.settings_window.root.update()
             self.settings.clock.tick_busy_loop(self.fps)
+            print(m.sqrt((self.E_coord[0]-self.D_coord[0])**2 + (self.E_coord[1]-self.D_coord[1])**2))
+            print(m.sqrt((self.A_coord[0]-self.B_coord[0])**2 + (self.A_coord[1]-self.B_coord[1])**2))
 
     def _calc_phi(self, psi, l1, l2, l3, a, b):
         p = l1 * m.cos(psi) + a
@@ -88,13 +91,8 @@ class SwellSimulator:
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)
         self._draw_ground()
-        pygame.draw.line(self.screen, (0, 0, 0), self.origin_coord, self.A_coord, 2)
-        pygame.draw.line(self.screen, (0, 0, 0), self.C_coord, self.D_coord, 2)
-        pygame.draw.line(self.screen, (0, 0, 0), self.C_coord, self.B_coord, 2)
-        pygame.draw.line(self.screen, (0, 0, 0), self.A_coord, self.B_coord, 2)
-        pygame.draw.line(self.screen, (0, 0, 0), self.D_coord, self.E_coord, 2)
-        pygame.draw.line(self.screen, (0, 0, 0), self.F_coord, self.E_coord, 2)
-        pygame.draw.line(self.screen, (0, 0, 0), self.E_coord, self.N_coord, 2)
+        self._draw_lines()
+        self._draw_links()
         pygame.display.flip()
 
     def _draw_ground(self):
@@ -102,6 +100,30 @@ class SwellSimulator:
         wall.midleft = (self.C_coord[0] + 35, self.C_coord[1])
         pygame.draw.line(self.screen, (170, 170, 170), (self.C_coord[0] + 35, self.C_coord[1]), self.C_coord, 3)
         pygame.draw.rect(self.screen, (170, 170, 170), wall)
+
+        base = pygame.Rect(self.F_coord[0]-15, self.F_coord[1]+15, 35+self.D["d"], 15)
+        pygame.draw.rect(self.screen, (170, 170, 170), base)
+        pygame.draw.line(self.screen, (170, 170, 170), (self.origin_coord[0], self.F_coord[1]+15), self.origin_coord, 3)
+        pygame.draw.line(self.screen, (170, 170, 170), (self.F_coord[0], self.F_coord[1]+15), self.F_coord, 3)
+
+
+    def _draw_lines(self):
+        pygame.draw.line(self.screen, (0, 0, 0), self.origin_coord, self.A_coord, 3)
+        pygame.draw.line(self.screen, (0, 0, 0), self.A_coord, self.B_coord, 3)
+        pygame.draw.line(self.screen, (0, 0, 0), self.B_coord, self.C_coord, 3)
+        pygame.draw.line(self.screen, (0, 0, 0), self.C_coord, self.D_coord, 3)
+        pygame.draw.line(self.screen, (0, 0, 0), self.D_coord, self.E_coord, 3)
+        pygame.draw.line(self.screen, (0, 0, 0), self.E_coord, self.F_coord, 3)
+        pygame.draw.line(self.screen, (0, 0, 0), self.E_coord, self.N_coord, 3)
+
+    def _draw_links(self):
+        pygame.draw.circle(self.screen, (255, 0, 0), self.origin_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.A_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.B_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.C_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.D_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.E_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.F_coord, 3)
 
 
 if __name__ == '__main__':
