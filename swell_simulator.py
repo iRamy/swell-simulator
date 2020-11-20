@@ -109,7 +109,6 @@ class SwellSimulator:
         pygame.draw.line(self.screen, (170, 170, 170), (self.origin_coord[0], self.F_coord[1]+15), self.origin_coord, 3)
         pygame.draw.line(self.screen, (170, 170, 170), (self.F_coord[0], self.F_coord[1]+15), self.F_coord, 3)
 
-
     def _draw_lines(self):
         pygame.draw.line(self.screen, (0, 0, 0), self.origin_coord, self.A_coord, 3)
         pygame.draw.line(self.screen, (0, 0, 0), self.A_coord, self.B_coord, 3)

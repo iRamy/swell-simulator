@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import ImageTk, Image
 
 
 class InvalidDimension(Exception):
@@ -13,9 +14,9 @@ class SettingsWindow:
         self.initial_dim = self.swell_sim.D.copy()
         self.root = tk.Tk()
         self.root.title("Settings")
-        self.root.geometry('230x450')
+        self.root.geometry('450x450')
         # self.root.iconbitmap('icon.ico')
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         self.dimensions = [{"name": "l1"},
                            {"name": "l2"},
@@ -47,6 +48,13 @@ class SettingsWindow:
         self.root.bind("<Escape>", self.close)
         self.root.bind("<Control-r>", self.reset)
 
+        image = Image.open("sketch.png")
+        image = image.resize((281, 380), Image.ANTIALIAS) # image original size 1209x1619
+        render = ImageTk.PhotoImage(image)
+        img_label = ttk.Label(self.root, image=render)
+        img_label.image = render
+        img_label.place(x=150, y=15)
+
     def update_dim(self, event=None):
         for index, dimension in enumerate(self.dimensions):
             try:
@@ -71,6 +79,7 @@ class SettingsWindow:
             dimension["value"] = tk.StringVar(value=self.swell_sim.D[dimension["name"]])
             dimension["dim_entry"] = ttk.Entry(self.root, width=11, textvariable=dimension["value"])
             dimension["dim_entry"].grid(row=index * 2 + 1, column=1)
+            dimension["label"].grid_remove()
 
     def math_er(self):
         self.error_label.grid(column=2)
