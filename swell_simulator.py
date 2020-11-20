@@ -51,7 +51,7 @@ class SwellSimulator:
                 self.settings_window.error_label.grid_remove()
                 self.phi = self._calc_phi(self.psi, self.D["l1"], self.D["l2"], self.D["l3"], self.D["a"], self.D["b"])
                 self.theta = self._calc_theta(self.phi, self.D["l3"], self.D["l4'"], self.D["l5"],
-                                              self.D["a"], self.D["c"], self.D["b"], self.D["d"])
+                                              self.D["a"], self.D["b"], self.D["c"], self.D["d"])
             except ValueError:
                 self.settings_window.math_er()
             else:
@@ -71,8 +71,11 @@ class SwellSimulator:
 
             self.settings_window.root.update()
             self.settings.clock.tick_busy_loop(self.fps)
-            print(m.sqrt((self.E_coord[0]-self.D_coord[0])**2 + (self.E_coord[1]-self.D_coord[1])**2))
-            print(m.sqrt((self.A_coord[0]-self.B_coord[0])**2 + (self.A_coord[1]-self.B_coord[1])**2))
+
+            # if round(m.sqrt((self.A_coord[0]-self.B_coord[0])**2 + (self.A_coord[1]-self.B_coord[1])**2)) != self.D["l2"]:
+            #    print('ERROR1')
+            # if round(m.sqrt((self.E_coord[0]-self.D_coord[0])**2 + (self.E_coord[1]-self.D_coord[1])**2)) != self.D["l4'"]:
+            #    print('ERROR2')
 
     def _calc_phi(self, psi, l1, l2, l3, a, b):
         p = l1 * m.cos(psi) + a

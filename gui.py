@@ -26,7 +26,7 @@ class SettingsWindow:
                            {"name": "a"},
                            {"name": "b"},
                            {"name": "c"},
-                           {"name": "b"}]
+                           {"name": "d"}]
 
         for index, dimension in enumerate(self.dimensions):
             ttk.Label(self.root, text=f"{dimension['name']} : ").grid()
