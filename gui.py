@@ -14,7 +14,7 @@ class SettingsWindow:
         self.initial_dim = self.swell_sim.D.copy()
         self.root = tk.Tk()
         self.root.title("Settings")
-        self.root.geometry('450x450')
+        self.root.geometry('450x470')
         # self.root.iconbitmap('icon.ico')
         self.root.resizable(True, True)
 
@@ -27,29 +27,33 @@ class SettingsWindow:
                            {"name": "a"},
                            {"name": "b"},
                            {"name": "c"},
-                           {"name": "d"}]
+                           {"name": "d"},
+                           {"name": "speed"}]
 
         for index, dimension in enumerate(self.dimensions):
-            ttk.Label(self.root, text=f"{dimension['name'].upper()} : ").grid()
+            if dimension["name"] != "speed":
+                ttk.Label(self.root, text=f"{dimension['name'].upper()} : ").grid()
+            else: ttk.Label(self.root, text="Speed : ").grid()
             dimension["value"] = tk.StringVar(value=self.swell_sim.D[dimension["name"]])
             dimension["dim_entry"] = ttk.Entry(self.root, width=11, textvariable=dimension["value"])
             dimension["dim_entry"].grid(row=index*2+1, column=1)
             dimension["label"] = ttk.Label(self.root)
 
+        ttk.Label(self.root, text="deg/s").grid(row=21, column=2)
         self.error_label = ttk.Label(self.root, text="Impossible shape !", foreground='red')
 
         action_ok = ttk.Button(self.root, text="OK", command=self.update_dim)
-        action_ok.grid(row=len(self.dimensions*2), column=2)
+        action_ok.grid(row=len(self.dimensions*2)+2, column=2)
 
         action_rst = ttk.Button(self.root, text="Reset", command=self.reset)
-        action_rst.grid(row=len(self.dimensions*2), column=1)
+        action_rst.grid(row=len(self.dimensions*2)+2, column=1)
 
         self.root.bind("<Return>", self.update_dim)
         self.root.bind("<Escape>", self.close)
         self.root.bind("<Control-r>", self.reset)
 
         image = Image.open("sketch.png")
-        image = image.resize((281, 380), Image.ANTIALIAS) # image original size 1209x1619
+        image = image.resize((281, 380), Image.ANTIALIAS)  # image original size 1209x1619
         render = ImageTk.PhotoImage(image)
         img_label = ttk.Label(self.root, image=render)
         img_label.image = render
@@ -60,7 +64,7 @@ class SettingsWindow:
             try:
                 dimension["label"].grid_remove()
                 dim = float(dimension["value"].get())
-                if dim < 0 and not dimension["name"] in ["a", "b", "c", "d"]:
+                if dim < 0 and not dimension["name"] in ["a", "b", "c", "d", "speed"]:
                     raise InvalidDimension
                 self.swell_sim.D[dimension["name"]] = dim
                 

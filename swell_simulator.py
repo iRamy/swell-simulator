@@ -27,7 +27,8 @@ class SwellSimulator:
                   "a": 58 * scale,
                   "b": 17 * scale,
                   "c": 16 * scale,
-                  "d": 18 * scale}
+                  "d": 18 * scale,
+                  "speed": 200}  # degrees per second
 
         self.psi = 0
         self.phi = 0
@@ -55,7 +56,7 @@ class SwellSimulator:
             except ValueError:
                 self.settings_window.math_er()
             else:
-                self.psi += 200 / self.fps * (m.pi / 180)  # degrees per second
+                self.psi += self.D["speed"] / self.fps * (m.pi / 180)
 
                 self.C_coord = (self.origin_coord[0] + self.D["b"], self.origin_coord[1] + self.D["a"])
                 self.D_coord = (self.C_coord[0] - self.D["l3"] * m.sin(self.phi), self.C_coord[1] + self.D["l3"] * m.cos(self.phi))
@@ -77,14 +78,16 @@ class SwellSimulator:
             # if round(m.sqrt((self.E_coord[0]-self.D_coord[0])**2 + (self.E_coord[1]-self.D_coord[1])**2)) != self.D["l4'"]:
             #    print('ERROR2')
 
-    def _calc_phi(self, psi, l1, l2, l3, a, b):
+    @staticmethod
+    def _calc_phi(psi, l1, l2, l3, a, b):
         p = l1 * m.cos(psi) + a
         q = l1 * m.sin(psi) + b
         r = (l1 ** 2 + a ** 2 + b ** 2 + l3 ** 2 - l2 ** 2 + 2 * a * l1 * m.cos(psi) +
              2 * b * l1 * m.sin(psi)) / (2 * l3)
         return 2 * m.atan((p - m.sqrt(p ** 2 + q ** 2 - r ** 2)) / (q + r))
 
-    def _calc_theta(self, phi, l3, l4_, l5, a, b, c, d):
+    @staticmethod
+    def _calc_theta(phi, l3, l4_, l5, a, b, c, d):
         p = d + b - l3 * m.sin(phi)
         q = l3 * m.cos(phi) + a - c
         r = (l5 ** 2 + l3 ** 2 + (c - a) ** 2 + (d + b) ** 2 - l4_ ** 2 - 2 * l3 * (c - a) * m.cos(phi) -
