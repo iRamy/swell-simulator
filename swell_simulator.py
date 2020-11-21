@@ -32,7 +32,7 @@ class SwellSimulator:
         self.psi = 0
         self.phi = 0
 
-        self.origin_coord = (self.settings.screen_width * 2 / 3, self.settings.screen_height / 5)
+        self.origin_coord = (self.settings.screen_width * 3 / 5, self.settings.screen_height / 5)
 
         self.settings_window = SettingsWindow(self)
 

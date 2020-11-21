@@ -30,7 +30,7 @@ class SettingsWindow:
                            {"name": "d"}]
 
         for index, dimension in enumerate(self.dimensions):
-            ttk.Label(self.root, text=f"{dimension['name']} : ").grid()
+            ttk.Label(self.root, text=f"{dimension['name'].upper()} : ").grid()
             dimension["value"] = tk.StringVar(value=self.swell_sim.D[dimension["name"]])
             dimension["dim_entry"] = ttk.Entry(self.root, width=11, textvariable=dimension["value"])
             dimension["dim_entry"].grid(row=index*2+1, column=1)
@@ -53,7 +53,7 @@ class SettingsWindow:
         render = ImageTk.PhotoImage(image)
         img_label = ttk.Label(self.root, image=render)
         img_label.image = render
-        img_label.place(x=150, y=15)
+        img_label.place(x=153, y=15)
 
     def update_dim(self, event=None):
         for index, dimension in enumerate(self.dimensions):
@@ -65,12 +65,10 @@ class SettingsWindow:
                 self.swell_sim.D[dimension["name"]] = dim
                 
             except ValueError:
-                dimension["label"].configure(text="Give a real number")
-                dimension["label"].configure(foreground='red')
+                dimension["label"].configure(text="Give a real number", foreground='red')
                 dimension["label"].grid(column=1, row=index*2)
             except InvalidDimension:
-                dimension["label"].configure(text="Give a positive number")
-                dimension["label"].configure(foreground='red')
+                dimension["label"].configure(text="Give a positive number", foreground='red')
                 dimension["label"].grid(column=1, row=index*2)
 
     def reset(self, event=None):

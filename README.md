@@ -1,2 +1,2 @@
-# swell-simulator
-Swell simulator with the possibility  to change the dimensions thanks to a widget.
+# Swell Simulator
+Change the dimensions of a swell simulator and observe its behaviour.
