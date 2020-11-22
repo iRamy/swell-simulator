@@ -14,7 +14,7 @@ class SettingsWindow:
         self.initial_dim = self.swell_sim.D.copy()
         self.root = tk.Tk()
         self.root.title("Settings")
-        self.root.geometry('450x470')
+        self.root.geometry('450x500')
         # self.root.iconbitmap('icon.ico')
         self.root.resizable(True, True)
 
@@ -57,7 +57,7 @@ class SettingsWindow:
         render = ImageTk.PhotoImage(image)
         img_label = ttk.Label(self.root, image=render)
         img_label.image = render
-        img_label.place(x=153, y=15)
+        img_label.place(x=170, y=15)
 
     def update_dim(self, event=None):
         for index, dimension in enumerate(self.dimensions):
