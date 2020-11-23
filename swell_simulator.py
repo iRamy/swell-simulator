@@ -122,13 +122,18 @@ class SwellSimulator:
         pygame.draw.line(self.screen, (0, 0, 0), self.E_coord, self.N_coord, 3)
 
     def _draw_links(self):
-        pygame.draw.circle(self.screen, (255, 0, 0), self.origin_coord, 3)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.A_coord, 3)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.B_coord, 3)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.C_coord, 3)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.D_coord, 3)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.E_coord, 3)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.F_coord, 3)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.origin_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.A_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.B_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.C_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.D_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.E_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.F_coord, 4)
+        pygame.draw.circle(self.screen, (255, 0, 0), self.N_coord, 4)
+        # zeta = m.atan((self.D["a"]+self.D["l3"]*m.cos(self.phi)-(self.D["c"]+self.D["l5"]*m.cos(self.theta))) /
+        #              (self.D["b"]-self.D["l3"]*m.sin(self.phi)-(-self.D["d"]+self.D["l5"]*m.sin(self.theta))))
+        # pygame.draw.circle(self.screen, (0, 255, 0), (self.C_coord[0]-(self.D["l3"]*m.sin(self.phi)+self.D["l4"]*m.cos(zeta)),
+        #                                              self.C_coord[1]+(self.D["l3"]*m.cos(self.phi)-self.D["l4"]*m.sin(zeta))), 4)
 
 
 if __name__ == '__main__':
