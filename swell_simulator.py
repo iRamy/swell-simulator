@@ -55,6 +55,8 @@ class SwellSimulator:
                                               self.D["a"], self.D["b"], self.D["c"], self.D["d"])
             except ValueError:
                 self.settings_window.math_er()
+            except:
+                break
             else:
                 self.psi += self.D["speed"] / self.fps * (m.pi / 180)
                 self.psi = self.psi % (2*m.pi)
