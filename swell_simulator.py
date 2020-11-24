@@ -57,6 +57,7 @@ class SwellSimulator:
                 self.settings_window.math_er()
             else:
                 self.psi += self.D["speed"] / self.fps * (m.pi / 180)
+                self.psi = self.psi % (2*m.pi)
 
                 self.C_coord = (self.origin_coord[0] + self.D["b"], self.origin_coord[1] + self.D["a"])
                 self.D_coord = (self.C_coord[0] - self.D["l3"] * m.sin(self.phi), self.C_coord[1] + self.D["l3"] * m.cos(self.phi))
