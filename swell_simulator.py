@@ -1,4 +1,5 @@
 import pygame
+import pygame.gfxdraw
 import sys
 import math as m
 from settings import Settings
@@ -22,7 +23,7 @@ class SwellSimulator:
                   "l2": 59 * scale,
                   "l3": 26 * scale,
                   "l4": 60 * scale,
-                  "l4'": 30 * scale,
+                  "l4'": 34 * scale,
                   "l5": 68 * scale,
                   "a": 58 * scale,
                   "b": 17 * scale,
@@ -102,6 +103,7 @@ class SwellSimulator:
         self._draw_ground()
         self._draw_lines()
         self._draw_links()
+        self._draw_angles()
         pygame.display.flip()
 
     def _draw_ground(self):
@@ -137,6 +139,25 @@ class SwellSimulator:
         #              (self.D["b"]-self.D["l3"]*m.sin(self.phi)-(-self.D["d"]+self.D["l5"]*m.sin(self.theta))))
         # pygame.draw.circle(self.screen, (0, 255, 0), (self.C_coord[0]-(self.D["l3"]*m.sin(self.phi)+self.D["l4"]*m.cos(zeta)),
         #                                              self.C_coord[1]+(self.D["l3"]*m.cos(self.phi)-self.D["l4"]*m.sin(zeta))), 4)
+
+    def _draw_angles(self):
+        plan_phi = pygame.Rect(0, 0, self.D["l3"]*3/2, self.D["l3"]*3/2)
+        plan_phi.center = self.C_coord
+        pygame.draw.line(self.screen, (0, 119, 190), self.C_coord, (self.C_coord[0], self.C_coord[1]+self.D["l3"]*2/3+10), 1)
+        #pygame.draw.arc(self.screen, (0, 119, 190), plan_phi, -(0 + (self.phi > 0)*self.phi) - m.pi/2,
+        #                                                      -(0 + (self.phi < 0)*self.phi) - m.pi/2, 3)
+        pygame.gfxdraw.arc(self.screen, int(self.C_coord[0]), int(self.C_coord[1]), int(self.D["l3"]*2/3),
+                           (0 + (self.phi < 0)*int(self.phi*180/m.pi)) + 90,
+                           (0 + (self.phi > 0)*int(self.phi*180/m.pi)) + 90, (255, 0, 0))
+
+        plan_theta = pygame.Rect(0, 0, self.D["l5"]*3, self.D["l5"]*3)
+        plan_theta.center = self.F_coord
+        pygame.draw.line(self.screen, (0, 119, 190), self.F_coord, (self.F_coord[0], self.F_coord[1] + self.D["l5"]*4/5+10), 1)
+        #pygame.draw.arc(self.screen, (0, 119, 190), plan_theta, (0 + (self.theta < 0) * self.theta) - m.pi / 2,
+        #                                                        (0 + (self.theta > 0) * self.theta) - m.pi / 2, 3)
+        pygame.gfxdraw.arc(self.screen, int(self.F_coord[0]), int(self.F_coord[1]), int(self.D["l5"]*4/5),
+                           -(0 + (self.theta > 0) * int(self.theta * 180 / m.pi)) + 90,
+                           -(0 + (self.theta < 0) * int(self.theta * 180 / m.pi)) + 90, (255, 0, 0))
 
 
 if __name__ == '__main__':
