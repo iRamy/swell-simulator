@@ -220,7 +220,7 @@ class SwellSimulator:
         for i in [-unit_len//2, unit_len//2]:
             pygame.draw.line(self.screen, (255, 0, 0), (y_axis_start, x_axis + i), (y_axis_start + 5, x_axis + i))
         if self.dim_displayed in ["Φ", "θ", "ζ"]:
-            text = self.scale_font.render('pi/4', True, (0, 0, 0))
+            text = self.scale_font.render('π/4', True, (0, 0, 0))
             textRect = text.get_rect()
             textRect.midright = (y_axis_start-2, x_axis - unit_len)
             self.screen.blit(text, textRect)
