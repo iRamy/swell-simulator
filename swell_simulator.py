@@ -211,8 +211,7 @@ class SwellSimulator:
         x_axis = self.settings.screen_height/10 + 20
         unit_len = 70
         angle_scale = unit_len / (m.pi / 4)  # pi/4 rad <--> 70 px
-        X_scale = unit_len / (self.D["l3"]+self.D["l4"])
-        Y_scale = unit_len / (self.D["l3"]+self.D["l4"])
+        displacement_scale = unit_len / (self.D["l3"]+self.D["l4"])
         pygame.draw.line(self.screen, (0, 0, 0), (0, x_axis), (self.Nmax_psis + y_axis_start, x_axis))
         pygame.draw.line(self.screen, (0, 0, 0), (y_axis_start, 0), (y_axis_start, x_axis * 2))
         for i in [-unit_len, unit_len]:
@@ -224,12 +223,7 @@ class SwellSimulator:
             textRect = text.get_rect()
             textRect.midright = (y_axis_start-2, x_axis - unit_len)
             self.screen.blit(text, textRect)
-        elif self.dim_displayed == "X":
-            text = self.scale_font.render(f'{int(self.D["l3"]+self.D["l4"])}', True, (0, 0, 0))
-            textRect = text.get_rect()
-            textRect.midright = (y_axis_start-2, x_axis - unit_len)
-            self.screen.blit(text, textRect)
-        elif self.dim_displayed == "Y":
+        elif self.dim_displayed in ["X", "Y"]:
             text = self.scale_font.render(f'{int(self.D["l3"]+self.D["l4"])}', True, (0, 0, 0))
             textRect = text.get_rect()
             textRect.midright = (y_axis_start-2, x_axis - unit_len)
@@ -252,10 +246,10 @@ class SwellSimulator:
                                      int(x_axis-int(self.zetas[index]*angle_scale)), (0, 0, 255))
             elif self.dim_displayed == "X":
                 pygame.gfxdraw.pixel(self.screen, y_axis_start + index,
-                                     int(x_axis-int(self.X[index]*X_scale)), (0, 0, 255))
+                                     int(x_axis-int(self.X[index]*displacement_scale)), (0, 0, 255))
             elif self.dim_displayed == "Y":
                 pygame.gfxdraw.pixel(self.screen, y_axis_start + index,
-                                     int(x_axis-int(self.Y[index]*Y_scale)), (0, 0, 255))
+                                     int(x_axis-int(self.Y[index]*displacement_scale)), (0, 0, 255))
 
 
 if __name__ == '__main__':
