@@ -14,21 +14,14 @@ class SettingsWindow:
         self.initial_dim = self.swell_sim.D.copy()
         self.root = tk.Tk()
         self.root.title("Settings")
-        self.root.geometry('450x500')
+        self.root.geometry('480x520')
         # self.root.iconbitmap('icon.ico')
-        self.root.resizable(True, True)
+        self.root.resizable(False, False)
 
-        self.dimensions = [{"name": "l1"},
-                           {"name": "l2"},
-                           {"name": "l3"},
-                           {"name": "l4"},
-                           {"name": "l4'"},
-                           {"name": "l5"},
-                           {"name": "a"},
-                           {"name": "b"},
-                           {"name": "c"},
-                           {"name": "d"},
-                           {"name": "speed"}]
+        self.dimensions = [{"name": "l1"}, {"name": "l2"},  {"name": "l3"},
+                           {"name": "l4"}, {"name": "l4'"}, {"name": "l5"},
+                           {"name": "a"},  {"name": "b"},   {"name": "c"},
+                           {"name": "d"},  {"name": "speed"}]
 
         for index, dimension in enumerate(self.dimensions):
             if dimension["name"] != "speed":
@@ -48,12 +41,20 @@ class SettingsWindow:
         action_rst = ttk.Button(self.root, text="Reset", command=self.reset)
         action_rst.grid(row=len(self.dimensions*2)+2, column=1)
 
+        ttk.Label(self.root, text="Curve : ").grid()
+        self.par = tk.StringVar()
+        self.par_chosen = ttk.Combobox(self.root, width=12, textvariable=self.par, state="readonly")
+        self.par_chosen['values'] = ("", "Φ", "θ", "ζ", "X", "Y")
+        self.par_chosen.grid(column=1)
+        self.par_chosen.bind("<<ComboboxSelected>>", self.change_angle)
+        self.par_chosen.current(1)
+
         self.root.bind("<Return>", self.update_dim)
         self.root.bind("<Escape>", self.close)
         self.root.bind("<Control-r>", self.reset)
 
         image = Image.open("sketch.png")
-        image = image.resize((281, 380), Image.ANTIALIAS)  # image original size 1209x1619
+        image = image.resize((300, 400), Image.ANTIALIAS)  # image original size 1183x1577
         render = ImageTk.PhotoImage(image)
         img_label = ttk.Label(self.root, image=render)
         img_label.image = render
@@ -75,6 +76,9 @@ class SettingsWindow:
                 dimension["label"].configure(text="Give a positive number", foreground='red')
                 dimension["label"].grid(column=1, row=index*2)
 
+    def change_angle(self, event):
+        self.swell_sim.dim_displayed = self.par.get()
+
     def reset(self, event=None):
         self.swell_sim.D = self.initial_dim.copy()
         for index, dimension in enumerate(self.dimensions):
@@ -84,7 +88,7 @@ class SettingsWindow:
             dimension["label"].grid_remove()
 
     def math_er(self):
-        self.error_label.grid(column=2)
+        self.error_label.grid(row=25,column=2)
 
     def close(self, event=None):
         self.root.destroy()
