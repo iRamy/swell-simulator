@@ -15,7 +15,7 @@ class SwellSimulator:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption('Swell Simulator')
 
-        self.fps = 60
+        self.fps = 100
 
         scale = 3
 
