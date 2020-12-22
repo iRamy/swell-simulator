@@ -88,7 +88,7 @@ class SettingsWindow:
             dimension["label"].grid_remove()
 
     def math_er(self):
-        self.error_label.grid(row=25,column=2)
+        self.error_label.grid(row=25, column=2)
 
     def close(self, event=None):
         self.root.destroy()

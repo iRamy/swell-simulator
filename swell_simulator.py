@@ -23,44 +23,32 @@ class SwellSimulator:
                   "l4": 60 * scale, "l4'": 34 * scale, "l5": 68 * scale,
                   "a": 58 * scale,  "b": 17 * scale,   "c": 16 * scale,
                   "d": 18 * scale,  "speed": 200}  # degrees per second
-
+        # Initialization of angles
         self.psi = 0
         self.phi = 0
         self.theta = 0
         self.zeta = 0
+        # Initialization of dimension containers for the curves
         self.psis = []
         self.phis = []
         self.thetas = []
         self.zetas = []
         self.X = []
         self.Y = []
-        self.dim_displayed = "Φ"
-        self.Nmax_psis = 200
+
+        self.dim_displayed = "Φ"                            # Curve displayed
+        self.Nmax_psis = 200                                # Interval of the curve
+        self.scale_font = pygame.font.SysFont('arial', 14)  # Font of the axes coordinates
 
         self.origin_coord = (self.settings.screen_width/2, self.settings.screen_height/3)
         self.machine_grabbed = False
 
-        self.settings_window = SettingsWindow(self)
-
-        self.scale_font = pygame.font.SysFont('arial', 14)
+        self.settings_window = SettingsWindow(self)  # GUI
 
     def run(self):
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
 
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        sys.exit()
-
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if pygame.mouse.get_pressed(num_buttons=3)[0]:
-                        if self._cursor_on_origin():
-                            self.machine_grabbed = True
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    if not pygame.mouse.get_pressed(num_buttons=3)[0]:
-                        self.machine_grabbed = False
+            self._check_events()
 
             self.A_coord = (self.origin_coord[0] - self.D["l1"] * m.sin(self.psi),
                             self.origin_coord[1] - self.D["l1"] * m.cos(self.psi))
@@ -75,7 +63,7 @@ class SwellSimulator:
                 break
             else:
                 self.psi += self.D["speed"] / self.fps * (m.pi / 180)
-                self.psi = self.psi % (2*m.pi)
+                self.psi = self.psi % (2*m.pi)  # Preventing psi from going to infinity
 
                 self.C_coord = (self.origin_coord[0] + self.D["b"], self.origin_coord[1] + self.D["a"])
                 self.D_coord = (self.C_coord[0] - self.D["l3"] * m.sin(self.phi), self.C_coord[1] + self.D["l3"] * m.cos(self.phi))
@@ -84,10 +72,10 @@ class SwellSimulator:
                 self.F_coord = (self.origin_coord[0] - self.D["d"], self.origin_coord[1] + self.D["c"])
                 self.E_coord = (self.F_coord[0] + self.D["l5"] * m.sin(self.theta), self.F_coord[1] + self.D["l5"] * m.cos(self.theta))
 
-                angleED = m.atan((self.E_coord[1] - self.D_coord[1]) / (self.E_coord[0] - self.D_coord[0]))
-                self.N_coord = (self.D_coord[0] - self.D["l4"]*m.cos(angleED), self.D_coord[1] - self.D["l4"]*m.sin(angleED))
+                zeta = m.atan((self.E_coord[1] - self.D_coord[1]) / (self.E_coord[0] - self.D_coord[0]))
+                self.N_coord = (self.D_coord[0] - self.D["l4"]*m.cos(zeta), self.D_coord[1] - self.D["l4"]*m.sin(zeta))
 
-                self.data_plot()
+                self._data_plot()
 
                 self._update_screen()
                 if self.machine_grabbed:
@@ -97,9 +85,26 @@ class SwellSimulator:
             self.settings.clock.tick_busy_loop(self.fps)
 
             # if round(m.sqrt((self.A_coord[0]-self.B_coord[0])**2 + (self.A_coord[1]-self.B_coord[1])**2)) != self.D["l2"]:
-            #    print('ERROR1')
+            #    print('Distance AB changed')
             # if round(m.sqrt((self.E_coord[0]-self.D_coord[0])**2 + (self.E_coord[1]-self.D_coord[1])**2)) != self.D["l4'"]:
-            #    print('ERROR2')
+            #    print('Distance ED changed')
+
+    def _check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sys.exit()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    if self._cursor_on_origin():
+                        self.machine_grabbed = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if not pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    self.machine_grabbed = False
 
     @staticmethod
     def _calc_phi(psi, l1, l2, l3, a, b):
@@ -127,8 +132,8 @@ class SwellSimulator:
         self.screen.fill(self.settings.bg_color)
         self._draw_ground()
         self._draw_lines()
-        self._draw_links()
         self._draw_angles()
+        self._draw_links()
         if self.dim_displayed: self._draw_curve()
         pygame.display.flip()
 
@@ -154,17 +159,8 @@ class SwellSimulator:
 
     def _draw_links(self):
         pygame.draw.circle(self.screen, (255, 165, 0), self.origin_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.A_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.B_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.C_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.D_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.E_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.F_coord, 4)
-        pygame.draw.circle(self.screen, (255, 0, 0), self.N_coord, 4)
-        # zeta = m.atan((self.D["a"]+self.D["l3"]*m.cos(self.phi)-(self.D["c"]+self.D["l5"]*m.cos(self.theta))) /
-        #              (self.D["b"]-self.D["l3"]*m.sin(self.phi)-(-self.D["d"]+self.D["l5"]*m.sin(self.theta))))
-        # pygame.draw.circle(self.screen, (0, 255, 0), (self.C_coord[0]-(self.D["l3"]*m.sin(self.phi)+self.D["l4"]*m.cos(zeta)),
-        #                                              self.C_coord[1]+(self.D["l3"]*m.cos(self.phi)-self.D["l4"]*m.sin(zeta))), 4)
+        for point in (self.A_coord, self.B_coord, self.C_coord, self.D_coord, self.E_coord, self.F_coord, self.N_coord):
+            pygame.draw.circle(self.screen, (255, 0, 0), point, 4)
 
     def _draw_angles(self):
         if self.dim_displayed == "Φ":
@@ -187,7 +183,7 @@ class SwellSimulator:
                                -(0 + (self.theta > 0) * int(self.theta * 180 / m.pi)) + 90,
                                -(0 + (self.theta < 0) * int(self.theta * 180 / m.pi)) + 90, (255, 0, 0))
 
-    def data_plot(self):
+    def _data_plot(self):
         self.zeta = m.atan(
             (self.D["a"] + self.D["l3"] * m.cos(self.phi) - (self.D["c"] + self.D["l5"] * m.cos(self.theta))) /
             (self.D["b"] - self.D["l3"] * m.sin(self.phi) - (-self.D["d"] + self.D["l5"] * m.sin(self.theta))))
