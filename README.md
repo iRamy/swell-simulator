@@ -1,5 +1,5 @@
 # Swell Simulator
-Change the dimensions of a swell simulator and observe its behaviour.
+This program allows the user to change the dimensions of a swell simulator and observe its behaviour through an animation.
 
 Commands :
 
